@@ -8,7 +8,6 @@ Resources:
         LoadBalancerInfo:
           ContainerName: "demo-web-app"
           ContainerPort: <PORT>
-        # Optional properties
         PlatformVersion: "LATEST"
         NetworkConfiguration:
           AwsvpcConfiguration:
