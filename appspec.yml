@@ -1,0 +1,17 @@
+version: 0.0
+
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: <TASK_DEFINITION>
+        LoadBalancerInfo:
+          ContainerName: "demo-web-app"
+          ContainerPort: <PORT>
+        # Optional properties
+        PlatformVersion: "LATEST"
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            Subnets: ["<SUBNET-A>","<SUBNET-C>"]
+            SecurityGroups: ["<SECURITY-GROUP>"]
+            AssignPublicIp: "DISABLED"

@@ -1,0 +1,40 @@
+version: 0.2
+
+run-as: root
+
+phases:
+  install:
+    commands:
+      - yum install jq -y
+
+  pre_build:
+    commands:
+      - echo "Pre Build Phase.."
+      - VERSION=$(cat package.json | jq ".version" -r)
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+  build:
+    commands:
+      - echo "Build Phase.."
+      - docker build --build-arg ARG_PORT=$PORT -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$VERSION
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - echo "Post Build Phase.."
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$VERSION
+      - sed "s|<SUBNET-A>|$SUBNET_A|" -i appspec.yml
+      - sed "s|<SUBNET-C>|$SUBNET_C|" -i appspec.yml
+      - sed "s|<SECURITY-GROUP>|$SECURITY_GROUP|" -i appspec.yml
+      - sed "s|<PORT>|$PORT|" -i appspec.yml
+      - sed "s|<ACCOUNT_ID>|$AWS_ACCOUNT_ID|" -i taskdef.json
+      - sed "s|<ECR_REPO_URI>|$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME|" -i taskdef.json
+      - sed "s|<TAG>|$IMAGE_TAG|" -i taskdef.json
+      - sed "s|<PORT>|$PORT|" -i taskdef.json
+
+artifacts:
+  files:
+    - appspec.yml
+    - taskdef.json

@@ -1,0 +1,6 @@
+node_modules
+Dockerfile
+.gitignore
+taskdef.json
+*.yml
+*.md

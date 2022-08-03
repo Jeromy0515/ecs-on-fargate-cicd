@@ -1,0 +1,20 @@
+{
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ECSTaskExecutionRole",
+  "containerDefinitions": [{
+    "name": "demo-web-app",
+    "image": "<ECR_REPO_URI>:<TAG>",
+    "essential": true,
+    "portMappings": [{
+      "protocol": "tcp",
+      "hostPort": <PORT>,
+      "containerPort": <PORT>
+    }]
+  }],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "family": "ecs-demo-taskdef"
+}
