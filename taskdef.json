@@ -1,5 +1,5 @@
 {
-  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ECSTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
   "containerDefinitions": [{
     "name": "demo-web-app",
     "image": "<ECR_REPO_URI>:<TAG>",
