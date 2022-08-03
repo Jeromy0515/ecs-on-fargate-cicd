@@ -33,6 +33,8 @@ phases:
       - sed "s|<ECR_REPO_URI>|$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME|" -i taskdef.json
       - sed "s|<TAG>|$IMAGE_TAG|" -i taskdef.json
       - sed "s|<PORT>|$PORT|" -i taskdef.json
+      - cat appspec.yml
+      - cat taskdef.json
 
 artifacts:
   files:
